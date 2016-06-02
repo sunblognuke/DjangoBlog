@@ -88,7 +88,7 @@ class MonthlyArchivesView(ListView):
     context_object_name = "article_list"
 
     def get_queryset(self):
-        article_list = Article.objects.filter(pub_date__year=self.kwargs['year'], pub_date__month=self.kwargs['month'])
+        article_list = Article.objects.filter(publish_time__year=self.kwargs['year'], publish_time__month=self.kwargs['month'])
         for article in article_list:
             article.body = markdown2.markdown(article.body, extras=['fenced-code-blocks'], )
 

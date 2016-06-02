@@ -25,7 +25,7 @@
                     <h1 class="title">{{ article.title }}</h1>
                 </div>
                 <div class="date-read">
-                    <i class="icon-date"></i><span class="date">{{ article.last_modified_time|date:"Y年n月d日" }}</span>
+                    <i class="icon-date"></i><span class="date">{{ article.publish_time |date:"Y年n月d日" }}</span>
 
                     {% for tag in article.tags.all %}
                     <a href="{%url 'blog:tag' tag%}">{{tag }}</a>

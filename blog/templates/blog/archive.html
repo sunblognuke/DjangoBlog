@@ -10,7 +10,7 @@
 
                     <p>
                         <time class="post-time" itemprop="dateCreated">
-                            {{ article.last_modified_time|date:"Y年n月d日" }}
+                            {{ article.publish_time |date:"Y年n月d日" }}
                         </time>
                         <a href="{{blog.get_absolute_url}}">{{ article.title }}</a>
 

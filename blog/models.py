@@ -12,7 +12,7 @@ from django.template.defaultfilters import slugify
 @python_2_unicode_compatible
 class ArchivesManager(models.Manager):
     def get_queryset(self):
-        return Article.objects.datetimes('pub_date','month',order='DESC')
+        return Article.objects.datetimes('publish_time','month',order='DESC')
 
 
 class ArchivesItem(models.Model):
@@ -37,7 +37,7 @@ class Article(models.Model):
     abstract = models.TextField('摘要', max_length=1024, blank=True, null=True, help_text="可选，如若为空将摘取正文的前54个字符")
     created_time = models.DateTimeField('创建时间', auto_now_add=True)
     last_modified_time = models.DateTimeField('修改时间', auto_now_add=True)
-    pub_date = models.DateTimeField('发表时间', default=datetime.datetime.now, null=True)
+    publish_time  = models.DateTimeField('发表时间', default=datetime.datetime.now, null=True)
     status = models.CharField('文章状态', max_length=1, choices=STATUS_CHOICES)
     views = models.PositiveIntegerField('浏览量', default=0)
     likes = models.PositiveIntegerField('点赞数', default=0)
@@ -67,7 +67,7 @@ class Article(models.Model):
         super(Article, self).save(*args, **kwargs)
 
     class Meta:
-        ordering = ['-pub_date']
+        ordering = ['-publish_time']
 
 
 class Tag(models.Model):
