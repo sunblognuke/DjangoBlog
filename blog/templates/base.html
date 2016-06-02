@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="{% static 'usera/lib/font-awesome/css/font-awesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'blog/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'blog/css/pygments/manni.css' %}">
+    {% block head_css %}{% endblock %}
+    {% block head_javascript %}{% endblock %}
 </head>
 <body>
 <div id="header">
@@ -15,22 +17,22 @@
         <a href="{% url 'blog:index' %}" title="第一个博客" id="logo"></a>
         <ul id="header-nav">
             <li><a href="{% url 'blog:index' %}">首页</a></li>
-            <!-- <li><a href="{% url 'blog:archives' %}">归档</a></li> -->
+            <li><a href="{% url 'blog:archives' %}">全部归档</a></li>
+            {% if user.is_authenticated %}
+            <li ><a href="{% url 'admin:index' %}">后台管理</a></li>
+            {% endif %}
         </ul>
         <div id="header-right" class="login">
             {% if user.is_authenticated %}
             <div id="user-info">
-                <a href="{% url 'usera:signup' %}"><span id="dropdown-button">注册</span></a>
-                <!-- 	<span id="dropdown-button">退出</span> -->
-            </div>
-            <div id="user-info">
-                <a href="{% url 'usera:signin' %}"><span id="dropdown-button">登录</span></a>
-                <!-- 	<span id="dropdown-button">退出</span> -->
+                <a href="{% url 'usera:log_out' %}"><span id="dropdown-button">登出</span></a>
             </div>
             {% else %}
             <div id="user-info">
-                <a href="{% url 'usera:log_out' %}"><span id="dropdown-button">登出</span></a>
-                <!-- 	<span id="dropdown-button">退出</span> -->
+                <a href="{% url 'usera:signup' %}"><span id="dropdown-button">注册</span></a>
+            </div>
+            <div id="user-info">
+                <a href="{% url 'usera:signin' %}"><span id="dropdown-button">登录</span></a>
             </div>
             {% endif %}
         </div>
@@ -87,23 +89,32 @@
                     </div>
                     <ul class="list-group">
                         {% for archiveItem in archives %}
-                        
                         <li class="list-group-item"><a href="{% url 'blog:monthly_archives' year=archiveItem.year month=archiveItem|date:'m' %}">{{ archiveItem|date:'Y年m月' }}</a></li>
                         {% endfor %}
                     </ul>
                 </div>
 
-                <!-- {# <div class="panel panel-default">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4>热门标签</h4>
+                    </div>
+                    <div style="padding: 20px 10px">
+                        {% for t in tags %}
+                        <a href="{%url 'blog:tag' t.name%}" class="label label-info" style="padding:5px;">{{t.name }}</a>
+                        {% endfor %}
+                    </div>
+                </div> 
+                <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4>友情链接</h4>
                     </div>
                     <ul class="list-group">
-                        {% for friend in friends %}
-                        <li class="list-group-item"><a href="{{friend.url}}">{{friend.title}}</a></li>
+                        {% for v in friends %}
+                        <li class="list-group-item"><a href="{{v.url}}">{{v.title}}</a></li>
                         {% endfor %}
                     </ul>
-                </div #} -->
-                <div class="panel panel-default">
+                </div>
+                <!-- <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4>图书推荐</h4>
                     </div>
@@ -115,7 +126,7 @@
 
                         </li>
                     </ul>
-                </div>
+                </div> -->
             </div>
 
         </div>
@@ -133,5 +144,6 @@
     <div id="copyright">&copy; djangoBlog 2016</div>
 </div>
 <script type="text/javascript" src="{% static 'blog/js/jquery.js' %}"></script>
+{% block footer_javascript %}{% endblock %}
 </body>
 </html>

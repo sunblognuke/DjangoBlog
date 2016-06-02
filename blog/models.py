@@ -68,12 +68,18 @@ class Article(models.Model):
 
     class Meta:
         ordering = ['-publish_time']
+        # verbose_name = '文章管理'
+        # verbose_name_plural = '文章管理'
 
 
 class Tag(models.Model):
     name = models.CharField('名称', max_length=20)
     created_time = models.DateTimeField('创建时间', auto_now_add=True)
     last_modified_time = models.DateTimeField('修改时间', auto_now=True)
+
+    class Meta:
+        verbose_name = '标签集合'
+        verbose_name_plural = '标签集合'
 
     def __str__(self):
         return self.name
@@ -84,5 +90,27 @@ class Category(models.Model):
     created_time = models.DateTimeField('创建时间', auto_now_add=True)
     last_modified_time = models.DateTimeField('修改时间', auto_now=True)
 
+
+    class Meta:
+        verbose_name = '分类目录'
+        verbose_name_plural = '分类目录'
+
+
     def __str__(self):
         return self.name
+
+class Friend(models.Model):
+    """
+    友情链接
+    """
+    title = models.CharField('名称', max_length=100, default='')
+    url = models.URLField('链接', default='')
+    position = models.SmallIntegerField('位置', default=1)
+    active = models.BooleanField('是否激活', default=True)
+
+    class Meta:
+        verbose_name = '友情链接'
+        verbose_name_plural = '友情链接'
+
+    def __str__(self):
+        return self.title

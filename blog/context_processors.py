@@ -2,9 +2,7 @@
 # -*- coding: utf-8 -*-
 from django.db import connection
 
-from blog.models import Article, Category, Tag, ArchivesItem
-# from .models import Friend
-
+from blog.models import Article, Category, Tag, Friend, ArchivesItem
 
 # def tag_list(request):
 #     """
@@ -28,7 +26,7 @@ from blog.models import Article, Category, Tag, ArchivesItem
 
 def recent_blog_list(request):
     """
-    最近文章列表
+    侧栏小插件 -》信息收集器
     """
 
     # 最近发布的文章列表
@@ -37,10 +35,17 @@ def recent_blog_list(request):
     # 分类
     categories = Category.objects.all()
 
+    # 标签
+    tags = Tag.objects.all()
+
     # 归档
     archives = ArchivesItem.archives.all()
 
     # 友情链接
-    # friends = Friend.objects.filter(active=True).order_by('position')
+    friends = Friend.objects.filter(active=True).order_by('position')
 
-    return {'recent_blogs': recent_blogs, 'categories': categories, 'archives': archives} #, 'friends': friends
+    return {'recent_blogs': recent_blogs, 
+            'categories': categories, 
+            'tags': tags,
+            'archives': archives, 
+            'friends': friends}

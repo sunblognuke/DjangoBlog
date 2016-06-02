@@ -1,24 +1,19 @@
 {% extends 'base.html' %}
 {% block content %}
     <div class="clear-fix">
-        <div id="main">
-            {% load paginate_tags %}
-            {% paginate article_list 7 %}
+        <div id="main" class="post" style="padding: 10px">
+            
             {% for article in article_list %}
 
-                <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-
-                    <p>
+                <article class="archive_post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
                         <time class="post-time" itemprop="dateCreated">
                             {{ article.publish_time |date:"Y年n月d日" }}
                         </time>
                         <a href="{{blog.get_absolute_url}}">{{ article.title }}</a>
-
-
                 </article>
 
             {% endfor %}
-            {% include 'blog/pagination.html' %}
+           
         </div>
     </div>
 {% endblock %}
