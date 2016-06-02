@@ -30,8 +30,8 @@ class ArticleDetailView(DetailView):
         obj.body = markdown2.markdown(obj.body, extras=['fenced-code-blocks'], )
 
         # 阅读数增1
-        # obj.views += 1
-        # obj.save(modified=False)
+        obj.views += 1
+        obj.save(modified=False)
 
         return obj
 
