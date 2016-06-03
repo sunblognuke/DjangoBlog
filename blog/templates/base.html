@@ -18,6 +18,7 @@
         <ul id="header-nav">
             <li><a href="{% url 'blog:index' %}">首页</a></li>
             <li><a href="{% url 'blog:archives' %}">全部归档</a></li>
+            <li><a href="{% url 'blog:rss' %}">Rss Feed</a></li>
             {% if user.is_authenticated %}
             <li ><a href="{% url 'admin:index' %}">后台管理</a></li>
             {% endif %}
