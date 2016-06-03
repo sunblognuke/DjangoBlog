@@ -27,12 +27,12 @@ class ArticleDetailView(DetailView):
 
     def get_object(self, queryset=None):
         obj = super(ArticleDetailView, self).get_object()
-        obj.body = markdown2.markdown(obj.body, extras=['fenced-code-blocks'], )
-
         # 阅读数增1
         obj.views += 1
         obj.save(modified=False)
 
+        obj.body = markdown2.markdown(obj.body, extras=['fenced-code-blocks'], )
+        
         return obj
 
 class CategoryView(ListView):
