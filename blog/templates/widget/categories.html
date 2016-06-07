@@ -1,0 +1,5 @@
+<ul class="list-group">
+{% for category in categories %}
+	<li class="list-group-item"><a href="{% url 'blog:category' category.pk %}">{{ category.name }} ({{category.count_article_published}})</a></li>
+{% endfor %}
+</ul>

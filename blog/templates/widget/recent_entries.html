@@ -1,0 +1,6 @@
+<ul class="list-group">
+    {% for item in entries %}
+    <li class="list-group-item"><a href="{{item.get_absolute_url}}">{{item.title}}</a>
+    </li>
+    {% endfor %}
+</ul>

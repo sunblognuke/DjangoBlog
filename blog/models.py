@@ -5,12 +5,18 @@ import re
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.encoding import python_2_unicode_compatible
+from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
+
+from taggit.managers import TaggableManager
 
 from simplemde.fields import SimpleMDEField
 
+from blog.managers import EntryPublishedManager, EntryRelatedPublishedManager, ArchivesManager
+
 # Create your models here.
 @python_2_unicode_compatible
+
 class ArchivesManager(models.Manager):
     def get_queryset(self):
         return Article.objects.datetimes('publish_time','month',order='DESC')
@@ -49,9 +55,19 @@ class Article(models.Model):
     topped = models.BooleanField(verbose_name='置顶', default=False)
 
     category = models.ForeignKey('Category', verbose_name='所属分类', null=True, on_delete=models.SET_NULL)
-    tags = models.ManyToManyField('Tag', verbose_name='标签集合', null=True, blank=True, help_text='标签')
+    # tags = models.ManyToManyField('Tag', verbose_name='标签集合', null=True, blank=True, help_text='标签')
 
-    slug = models.SlugField('slug', unique=True, max_length=100, help_text="Cool URIs dont change")
+    tags = TaggableManager(verbose_name='标签集合')
+
+    slug = models.SlugField('slug', unique=True, max_length=100,  
+                            help_text = _("a short version of the title consisting only of letters, numbers, underscores and hyphens."))
+
+    # from usera.models import ForumUser
+    # author = models.ForeignKey(ForumUser, verbose_name='作者')
+
+    objects = models.Manager()
+    published = EntryPublishedManager()
+
 
     def __str__(self):
         return self.title
@@ -67,30 +83,82 @@ class Article(models.Model):
 
         super(Article, self).save(*args, **kwargs)
 
+    @property
+    def previous_entry(self):
+        """
+        Returns the previous published entry if exists.
+        """
+        return self.previous_next_entries[0]
+
+    @property
+    def next_entry(self):
+        """
+        Returns the next published entry if exists.
+        """
+        return self.previous_next_entries[1]
+
+    @property
+    def previous_next_entries(self):
+        """
+        Returns and caches a tuple containing the next
+        and previous published entries.
+        Only available if the entry instance is published.
+        """
+        previous_next = getattr(self, 'previous_next', None)
+
+        if previous_next is None:
+            if not self.public:
+                previous_next = (None, None)
+                setattr(self, 'previous_next', previous_next)
+                return previous_next
+
+            entries = list(self.__class__.published.all())
+            index = entries.index(self)
+            try:
+                previous = entries[index + 1]
+            except IndexError:
+                previous = None
+
+            if index:
+                next = entries[index - 1]
+            else:
+                next = None
+            previous_next = (previous, next)
+            setattr(self, 'previous_next', previous_next)
+            
+        return previous_next
+
     class Meta:
         ordering = ['-publish_time']
+        get_latest_by = 'publish_time'
         verbose_name = '文章列表'
         verbose_name_plural = '文章列表'
 
 
-class Tag(models.Model):
-    name = models.CharField('名称', max_length=20)
-    created_time = models.DateTimeField('创建时间', auto_now_add=True)
-    last_modified_time = models.DateTimeField('修改时间', auto_now=True)
+# class Tag(models.Model):
+#     name = models.CharField('名称', max_length=20)
+#     created_time = models.DateTimeField('创建时间', auto_now_add=True)
+#     last_modified_time = models.DateTimeField('修改时间', auto_now=True)
 
-    class Meta:
-        verbose_name = '标签集合'
-        verbose_name_plural = '标签集合'
+#     class Meta:
+#         verbose_name = '标签集合'
+#         verbose_name_plural = '标签集合'
 
-    def __str__(self):
-        return self.name
-
+#     def __str__(self):
+#         return self.name
 
 class Category(models.Model):
     name = models.CharField('名称', max_length=20)
+    # slug = models.SlugField('slug', unique=True, max_length=100,  
+    #                         help_text = _("a short version of the title consisting only of letters, numbers, underscores and hyphens."))
     created_time = models.DateTimeField('创建时间', auto_now_add=True)
     last_modified_time = models.DateTimeField('修改时间', auto_now=True)
 
+    # def get_absolute_url(self):
+    #     return reverse('blog:category', args=(self.slug))
+
+    objects = models.Manager() # The default manager.
+    published = EntryRelatedPublishedManager()
 
     class Meta:
         verbose_name = '分类目录'

@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from blog.models import Article, Category, Tag
+from blog.models import Article, Category
+from taggit.models import Tag
 import markdown2
 
 # Create your views here.
@@ -32,7 +33,7 @@ class ArticleDetailView(DetailView):
         obj.save(modified=False)
 
         obj.body = markdown2.markdown(obj.body, extras=['fenced-code-blocks'], )
-        
+
         return obj
 
 class CategoryView(ListView):

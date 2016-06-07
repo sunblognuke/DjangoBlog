@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 from django.db import connection
 
-from blog.models import Article, Category, Tag, Friend, ArchivesItem
+from blog.models import Article, Category, Friend, ArchivesItem
+
+from taggit.models import Tag
 
 # def tag_list(request):
 #     """
@@ -30,10 +32,10 @@ def recent_blog_list(request):
     """
 
     # 最近发布的文章列表
-    recent_blogs = Article.objects.filter(status='p')[:10]
+    # recent_blogs = Article.objects.filter(status='p')[:10]
 
     # 分类
-    categories = Category.objects.all()
+    # categories = Category.objects.all()
 
     # 标签
     tags = Tag.objects.all()
@@ -44,8 +46,10 @@ def recent_blog_list(request):
     # 友情链接
     friends = Friend.objects.filter(active=True).order_by('position')
 
-    return {'recent_blogs': recent_blogs, 
-            'categories': categories, 
+    return {
+            # 'recent_blogs': recent_blogs, 
+            # 'categories': categories, 
             'tags': tags,
             'archives': archives, 
-            'friends': friends}
+            'friends': friends
+           }

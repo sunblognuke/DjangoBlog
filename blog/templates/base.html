@@ -62,12 +62,8 @@
                     <div class="panel-heading">
                         <h4>最近文章</h4>
                     </div>
-                    <ul class="list-group">
-                        {% for blog in recent_blogs %}
-                        <li class="list-group-item"><a href="{{blog.get_absolute_url}}">{{blog.title}}</a>
-                        </li>
-                        {% endfor %}
-                    </ul>
+                    {% load widget_tags %}
+                    {% get_random_entries 3 %}
                 </div>
 
 
@@ -76,10 +72,7 @@
                     <div class="panel-heading">
                         <h4>文章分类</h4>
                     </div>
-                    <ul class="list-group">
-                        {% for category in categories %}
-                        <li class="list-group-item"><a href="{% url 'blog:category' category.pk %}">{{ category.name }}</a></li>
-                        {% endfor %}
+                    {% get_categories %}
                     </ul>
                 </div>
                 

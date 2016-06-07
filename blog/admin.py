@@ -1,26 +1,43 @@
 from django.contrib import admin
 
 # Register your models here.
-from blog.models import Article, Category, Tag, Friend
+from blog.models import Article, Category, Friend
 from blog.forms import ArticleForm
 
 # Add in this class to customized the Admin Interface 
 class ArticleAdmin(admin.ModelAdmin): 
 	list_display = ('title', 'category', 'status', 'publish_time', 'views')
-	fields = (
-        'title',
-        'slug',
-        'cover',
-        'body',
-        'abstract',
-        'status',
-        ('topped', 'public', 'recommended'),
-        'publish_time',
-        'category',
-        'tags'
-    )
+	list_filter  = ('category', 'publish_time', 'status')
+	# 指定显示编辑的字段，其余则隐藏
+	# fields = (
+	#     'title',
+	#     'slug',
+	#     'cover',
+	#     'body',
+	#     'abstract',
+	#     'status',
+	#     ('topped', 'public', 'recommended'),
+	#     'publish_time',
+	#     'category',
+	#     'tags'
+	# )
 
-	search_fields = ('title',)
+	# alternative way as above
+	fieldsets = [
+				(None, {'fields': 
+				['title',
+				'slug',
+		        'cover',
+		        'body',
+		        'abstract',
+		        'status',
+		        'publish_time',
+		        'category',
+		        'tags',]}),
+	            ('文章选项', {'fields':[('topped', 'public', 'recommended')]})
+	           ]
+
+	search_fields = ('title', 'body', )
 	prepopulated_fields = {'slug':('title',)}
 	list_per_page = 20
 	actions = ['make_published']
@@ -48,4 +65,7 @@ class FriendAdmin(admin.ModelAdmin):
 
 admin.site.register(Friend, FriendAdmin)
 
-admin.site.register([Category, Tag])
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', )
+
+admin.site.register(Category, CategoryAdmin)
